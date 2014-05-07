@@ -78,7 +78,6 @@ let s:big_init = 0
 let s:small_update = 0
 let s:small_init = 0
 let s:needs_reset = 0
-let s:plugin_init = 0
 let s:small_file_dict={}
 
 " Section: Script functions {{{1
@@ -99,22 +98,19 @@ endfunction
 " of the necessary databases.
 "
 function! s:smallListUpdate(file)
-    let ext = fnamemodify(expand(a:file), ":e")
-    if ext =~ '[cChH]\([+x]\{2}\)\?'
-        let s:small_update = 1
+    let s:small_update = 1
 
-        " If file moves to small DB then we also do a big DB update so
-        " we don't end up with duplicate lookups.
-        if s:resolve_links
-            let path = fnamemodify(resolve(expand(a:file)), ":p:.")
-        else
-            let path = fnamemodify(expand(a:file), ":p:.")
-        endif
-        if !has_key(s:small_file_dict, path)
-            let s:small_file_dict[path] = 1
-            let s:big_update = 1
-            call writefile(keys(s:small_file_dict), expand(s:small_file) . ".files")
-        endif
+    " If file moves to small DB then we also do a big DB update so
+    " we don't end up with duplicate lookups.
+    if s:resolve_links
+        let path = fnamemodify(resolve(expand(a:file)), ":p:.")
+    else
+        let path = fnamemodify(expand(a:file), ":p:.")
+    endif
+    if !has_key(s:small_file_dict, path)
+        let s:small_file_dict[path] = 1
+        let s:big_update = 1
+        call writefile(keys(s:small_file_dict), expand(s:small_file) . ".files")
     endif
 endfunction
 
@@ -147,8 +143,15 @@ function! s:dbUpdate()
         " Build auto file list
         "
         let cmd .= "("
+        let cmd .= "set -f;" " turn off sh globbing
         if s:auto_files
-            let cmd .= "find . -regextype posix-extended -regex .*\\\.[cChH]\\\([+x]{2}\\\)?$ "
+            " Do the find command a 'portable' way
+            let cmd .= "find . -name *.c   -or -name *.h -or"
+            let cmd .=       " -name *.C   -or -name *.H -or"
+            let cmd .=       " -name *.c++ -or -name *.h++ -or"
+            let cmd .=       " -name *.cxx -or -name *.hxx -or"
+            let cmd .=       " -name *.cpp -or -name *.hpp"
+            let cmd .=       " -type f"
         else
             let cmd .= "echo "  " dummy so following cat command does not hang.
         endif
@@ -240,28 +243,31 @@ endfunction
 " Enable/init dynamic cscope updates {{{2
 "
 function! s:init()
-    if !s:plugin_init
-        " If they exist now, then add them before the update.
-        if filereadable(expand(s:big_file))
-            silent execute "cs add " . s:big_file
-            let s:big_init = 1
-        endif
-        if filereadable(expand(s:small_file))
-            silent execute "cs add " . s:small_file
-            let s:small_init = 1
+    " Blow away cscope connections (allows re-init)
+    "
+    silent execute "cs kill " . s:big_file
+    silent execute "cs kill " . s:small_file
+    let s:big_init = 0
+    let s:small_init = 0
 
-            " Seed the cscopedb_small_file_dict dictionary with the file list
-            " from the small DB.
-            "
-            for path in readfile(expand(s:small_file) . ".files")
-                let s:small_file_dict[path] = 1
-            endfor
-        endif
+    " If they DBs exist, then add them before the update.
+    if filereadable(expand(s:big_file))
+        silent execute "cs add " . s:big_file
+        let s:big_init = 1
+    endif
+    if filereadable(expand(s:small_file))
+        silent execute "cs add " . s:small_file
+        let s:small_init = 1
 
-        call s:installAutoCommands()
-        let s:plugin_init = 1
+        " Seed the cscopedb_small_file_dict dictionary with the file list
+        " from the small DB.
+        "
+        for path in readfile(expand(s:small_file) . ".files")
+            let s:small_file_dict[path] = 1
+        endfor
     endif
 
+    call s:installAutoCommands()
     call s:dbFullUpdate()
 endfunction
 
@@ -270,9 +276,9 @@ endfunction
 function! s:installAutoCommands()
     augroup cscopedb_augroup
         au!
-        au BufWritePre *.[cChH],*.[cChH]{++,xx} call <SID>smallListUpdate(expand("<afile>"))
-        au BufWritePost *.[cChH],*.[cChH]{++,xx} call <SID>dbUpdate()
-        au FileChangedShellPost *.[cChH],*.[cChH]{++,xx} call <SID>dbFullUpdate()
+        au BufWritePre *.[cChH],*.[cChH]{++,xx,pp} call <SID>smallListUpdate(expand("<afile>"))
+        au BufWritePost *.[cChH],*.[cChH]{++,xx,pp} call <SID>dbUpdate()
+        au FileChangedShellPost *.[cChH],*.[cChH]{++,xx,pp} call <SID>dbFullUpdate()
         au QuickFixCmdPre,CursorHoldI,CursorHold,WinEnter,CursorMoved * call <SID>dbReset()
     augroup END
 endfunction
