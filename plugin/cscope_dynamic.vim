@@ -245,8 +245,8 @@ endfunction
 function! s:init()
     " Blow away cscope connections (allows re-init)
     "
-    silent execute "cs kill " . s:big_file
-    silent execute "cs kill " . s:small_file
+    silent! execute "cs kill " . s:big_file
+    silent! execute "cs kill " . s:small_file
     let s:big_init = 0
     let s:small_init = 0
 
