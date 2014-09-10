@@ -70,10 +70,16 @@ if exists("g:cscopedb_lock_file")
 else
     let s:lock_file = ".cscopedb.lock"
 endif
+if exists("g:cscopedb_big_min_interval")
+    let s:big_min_interval = g:cscopedb_big_min_interval
+else
+    let s:big_min_interval = 180
+endif
 
 " Section: Internal script variables {{{1
 "
 let s:big_update = 0
+let s:big_last_update = 0
 let s:big_init = 0
 let s:small_update = 0
 let s:small_init = 0
@@ -123,6 +129,14 @@ function! s:dbUpdate()
 
     if filereadable(expand(s:lock_file))
         return
+    endif
+
+    " Limit how often a big DB update can occur.
+    "
+    if s:small_update != 1 && s:big_update == 1
+        if localtime() < s:big_last_update + s:big_min_interval
+            return
+        endif
     endif
 
     let cmd = ""
@@ -216,17 +230,23 @@ function! s:dbReset()
             silent cs reset
         endif
         let s:big_update = 0
+        let s:big_last_update = localtime()
     endif
     let s:needs_reset = 0
 
-    " Call update again if there is more work to be done
-    if (s:small_update == 1 || s:big_update == 1)
-        call s:dbUpdate()
-    else
+    " Don't call hook if there are small updates left.
+    " Big update has backoff delay, so we call hook even if
+    " big has an update pending.
+    if s:small_update != 1
         if exists("*Cscope_dynamic_update_hook")
             call Cscope_dynamic_update_hook(0)
         endif
     endif
+endfunction
+
+function! s:dbTick()
+    call s:dbReset()
+    call s:dbUpdate()
 endfunction
 
 " Do a FULL DB update {{{2
@@ -248,6 +268,7 @@ function! s:init()
     silent! execute "cs kill " . s:big_file
     silent! execute "cs kill " . s:small_file
     let s:big_init = 0
+    let s:big_last_update = 0
     let s:small_init = 0
 
     " If they DBs exist, then add them before the update.
@@ -279,7 +300,7 @@ function! s:installAutoCommands()
         au BufWritePre *.[cChH],*.[cChH]{++,xx,pp} call <SID>smallListUpdate(expand("<afile>"))
         au BufWritePost *.[cChH],*.[cChH]{++,xx,pp} call <SID>dbUpdate()
         au FileChangedShellPost *.[cChH],*.[cChH]{++,xx,pp} call <SID>dbFullUpdate()
-        au QuickFixCmdPre,CursorHoldI,CursorHold,WinEnter,CursorMoved * call <SID>dbReset()
+        au QuickFixCmdPre,CursorHoldI,CursorHold,WinEnter,CursorMoved * call <SID>dbTick()
     augroup END
 endfunction
 
