@@ -138,7 +138,7 @@ machines that have a proper shell. It likely also functions under cygwin.
 See bitbucket[1] for more information and current development.
 
 
-5. References
+6. References
 ===============================================================================
 [1] https://bitbucket.org/ericgarver/cscope_dynamic/wiki/Home
 [2] http://www.vim.org/scripts/script.php?script_id=5098
