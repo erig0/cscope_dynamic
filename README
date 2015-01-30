@@ -79,9 +79,11 @@ g:cscopedb_auto_files        If true, automatically find source code relative
                              to the current working directory.
 
 g:cscopedb_resolve_links     Resolve symlinks for files passed to cscope.
+							 Defaults is true. Set to 0 or false if you don't
+							 want links resolved.
 
-g:cscopedb_lock_file         Location of lock file. Lockfile is used to wait
-                             for cscope to finish it's work before requesting
+g:cscopedb_lock_file         Location of lock file. Lock file is used to wait
+                             for cscope to finish its work before requesting
                              it to do more work.
 
 g:cscopedb_big_min_interval  Minimal interval between big database updates.
@@ -92,11 +94,14 @@ g:cscopedb_big_min_interval  Minimal interval between big database updates.
 
 2.2 Hooks
 =======================================
-Users may define functions to get feedback form cscope_dynamic.
+Users may define functions to get feedback from cscope_dynamic.
 
 Cscope_dynamic_update_hook   Function called by cscope_dynamic when a database
                              update begins or ends. Useful for feedback to user.
-                             See "Status Line Indicator" example
+                             See "Status Line Indicator" example.
+							 Argument to function will be true if the plugin
+							 has started an update. False when it is done
+							 updating.
 
 
 3. Tricks
