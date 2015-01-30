@@ -1,3 +1,6 @@
+```
+:::text
+
 cscope_dynamic.vim
 
 A VIM plugin that enables very fast automatic cscope database updates for C/C++
@@ -61,39 +64,39 @@ g:cscopedb_big_file          Sets the name and location of the big cscope DB.
 
 g:cscopedb_small_file        Sets the name and location of the small cscope DB.
 
-g:cscopedb_auto_init		 If true, auto init cscope_dynamic if the DB
+g:cscopedb_auto_init         If true, auto init cscope_dynamic if the DB
                              g:cscopedb_big_file already exists.
 
-g:cscopedb_extra_files		 A file with a list of files for cscope_dynamic to
-							 pass to cscope. Can be used to index "out of tree"
-							 source code. Or can be used with
-							 g:cscopedb_auto_files = 0 if you don't want
-							 cscope_dynamic to automatically find source code.
-							 May also be useful if you want to pass absolute
-							 path names to cscope.
+g:cscopedb_extra_files       A file with a list of files for cscope_dynamic to
+                             pass to cscope. Can be used to index "out of tree"
+                             source code. Or can be used with
+                             g:cscopedb_auto_files = 0 if you don't want
+                             cscope_dynamic to automatically find source code.
+                             May also be useful if you want to pass absolute
+                             path names to cscope.
 
-g:cscopedb_auto_files		 If true, automatically find source code relative
-							 to the current working directory.
+g:cscopedb_auto_files        If true, automatically find source code relative
+                             to the current working directory.
 
-g:cscopedb_resolve_links	 Resolve symlinks for files passed to cscope.
+g:cscopedb_resolve_links     Resolve symlinks for files passed to cscope.
 
-g:cscopedb_lock_file		 Location of lock file. Lockfile is used to wait
-							 for cscope to finish it's work before requesting
-							 it to do more work.
+g:cscopedb_lock_file         Location of lock file. Lockfile is used to wait
+                             for cscope to finish it's work before requesting
+                             it to do more work.
 
-g:cscopedb_big_min_interval	 Minimal interval between big database updates.
-							 Big DB updates can be expensive. This tames the
-							 scenario where you may make changes to many files
-							 in a short window.
+g:cscopedb_big_min_interval  Minimal interval between big database updates.
+                             Big DB updates can be expensive. This tames the
+                             scenario where you may make changes to many files
+                             in a short window.
 
 
 2.2 Hooks
 =======================================
 Users may define functions to get feedback form cscope_dynamic.
 
-Cscope_dynamic_update_hook	 Function called by cscope_dynamic when a database
-							 update begins or ends. Useful for feedback to user.
-							 See "Status Line Indicator" example
+Cscope_dynamic_update_hook   Function called by cscope_dynamic when a database
+                             update begins or ends. Useful for feedback to user.
+                             See "Status Line Indicator" example
 
 
 3. Tricks
@@ -140,3 +143,5 @@ See bitbucket[1] for more information and current development.
 [1] https://bitbucket.org/ericgarver/cscope_dynamic/wiki/Home
 [2] http://www.vim.org/scripts/script.php?script_id=5098
 [3] http://vim.wikia.com/wiki/Timer_to_execute_commands_periodically
+
+```
