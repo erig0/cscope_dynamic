@@ -1,0 +1,142 @@
+cscope_dynamic.vim
+
+A VIM plugin that enables very fast automatic cscope database updates for C/C++
+codebases. It accomplishes this by using two cscope databases; a large one, and
+a small one. When a file is written it is moved to the small database, which
+can update in a matter of seconds - often sub-second. The file is then removed
+from the large database to avoid duplicate cscope query results. Subsequent
+writes to the same file only trigger a small database update. The initial move
+from the large to small database is a one time cost. This works well because
+you're often only modifying a subset of files at a time.
+
+===============================================================================
+===============================================================================
+
+1. Installation
+1.1 vimrc changes
+2. Configurables
+2.1 Variables
+2.2 Hooks
+3. Tricks 
+3.1 Status Line Indicator
+3.2 Re-trigger CursorHold
+4. Compatibility
+5. Development
+6. References
+
+
+
+
+1. Installation
+===============================================================================
+The plugin is only one file. So you can check out the repository[1] and drop
+cscope_dynamic.vim into your ~/.vim/plugin/ directory.
+
+Alternatively you can grab a vimball release from the downloads section[1][2].
+Then install it the standard vimball way.
+
+    $ vim .../cscope_dynamic-<ver>.vmb.gz
+    :so %
+    :q
+
+1.1 vimrc changes
+=======================================
+
+To init the plugin you can bind a key to the init function. If the cscope
+database already exists (because you've already done init) and you re-launch
+VIM then the plugin will auto initialize.
+
+    nmap <F12> <Plug>CscopeDBInit
+
+
+2. Configurables
+===============================================================================
+
+2.1 Variables
+=======================================
+There are some variables that can be set changes the behavior of
+cscope_dynamic.
+
+g:cscopedb_big_file          Sets the name and location of the big cscope DB.
+
+g:cscopedb_small_file        Sets the name and location of the small cscope DB.
+
+g:cscopedb_auto_init		 If true, auto init cscope_dynamic if the DB
+                             g:cscopedb_big_file already exists.
+
+g:cscopedb_extra_files		 A file with a list of files for cscope_dynamic to
+							 pass to cscope. Can be used to index "out of tree"
+							 source code. Or can be used with
+							 g:cscopedb_auto_files = 0 if you don't want
+							 cscope_dynamic to automatically find source code.
+							 May also be useful if you want to pass absolute
+							 path names to cscope.
+
+g:cscopedb_auto_files		 If true, automatically find source code relative
+							 to the current working directory.
+
+g:cscopedb_resolve_links	 Resolve symlinks for files passed to cscope.
+
+g:cscopedb_lock_file		 Location of lock file. Lockfile is used to wait
+							 for cscope to finish it's work before requesting
+							 it to do more work.
+
+g:cscopedb_big_min_interval	 Minimal interval between big database updates.
+							 Big DB updates can be expensive. This tames the
+							 scenario where you may make changes to many files
+							 in a short window.
+
+
+2.2 Hooks
+=======================================
+Users may define functions to get feedback form cscope_dynamic.
+
+Cscope_dynamic_update_hook	 Function called by cscope_dynamic when a database
+							 update begins or ends. Useful for feedback to user.
+							 See "Status Line Indicator" example
+
+
+3. Tricks
+===============================================================================
+
+3.1 Status Line Indicator
+=======================================
+It is useful to have a status line indicator for when the database is updating.
+Below is an example.
+
+    let g:statusline_cscope_flag = ""
+    set statusline=[%n]%<%f\ %h%m%r\ %=\
+    set statusline+=%(\ [%{g:statusline_cscope_flag}]\ \ \ %)
+    set statusline+=%-14.(%l,%c%V%)\ %P
+    function! Cscope_dynamic_update_hook(updating)
+        if a:updating
+            let g:statusline_cscope_flag = "C"
+        else
+            let g:statusline_cscope_flag = ""
+        endif
+        execute "redrawstatus!"
+    endfunction
+    call Cscope_dynamic_update_hook(0)
+
+
+3.2 Re-trigger CursorHold
+=======================================
+The plugin triggers off CursorHold events to reset the cscope database. It may
+be beneficial to add a trick[3] to your .vimrc to re-trigger CursorHold.
+
+4. Compatibility
+===============================================================================
+cscope_dynamic uses some shell-isms. Therefore it probably only works on *nix
+machines that have a proper shell. It likely also functions under cygwin.
+
+
+5. Development
+===============================================================================
+See bitbucket[1] for more information and current development.
+
+
+5. References
+===============================================================================
+[1] https://bitbucket.org/ericgarver/cscope_dynamic/wiki/Home
+[2] http://www.vim.org/scripts/script.php?script_id=5098
+[3] http://vim.wikia.com/wiki/Timer_to_execute_commands_periodically
