@@ -85,6 +85,7 @@ let s:small_update = 0
 let s:small_init = 0
 let s:needs_reset = 0
 let s:small_file_dict={}
+let s:full_update_force = 0
 
 " Section: Script functions {{{1
 
@@ -148,7 +149,13 @@ function! s:dbUpdate()
     " after the small updates are done.
     "
     if s:small_update == 1
-        let cmd .= "(cscope -kbUR -i".s:small_file.".files -f".s:small_file
+        let cmd .= "(cscope -kbR "
+        if s:full_update_force
+            let cmd .= "-u "
+        else 
+            let cmd .= "-U "
+        endif
+        let cmd .= "-i".s:small_file.".files -f".s:small_file
         let cmd .= "; rm ".s:lock_file
         let cmd .= ") &>/dev/null &"
 
@@ -190,12 +197,18 @@ function! s:dbUpdate()
 
         " Build the tags
         "
-        let cmd .= " && nice cscope -kqbUR -i".s:big_file.".files -f".s:big_file
-
+        let cmd .= " && nice cscope -kqbR "
+        if s:full_update_force
+            let cmd .= "-u "
+        else 
+            let cmd .= "-U "
+        endif
+        let cmd .= "-i".s:big_file.".files -f".s:big_file
         let cmd .= "; rm ".s:lock_file
         let cmd .= ") &>/dev/null &"
 
         let s:big_update = 2
+        let s:full_update_force = 0
     endif
 
     call s:runShellCommand(cmd)
@@ -292,6 +305,13 @@ function! s:init()
     call s:dbFullUpdate()
 endfunction
 
+" Force full update of DB {{{2
+"
+function! s:initForce()
+    let s:full_update_force = 1
+    call s:init()
+endfunction
+
 " Section: Autocommands {{{1
 "
 function! s:installAutoCommands()
@@ -306,7 +326,7 @@ endfunction
 
 " Section: Maps {{{1
 "
-noremap <unique> <Plug>CscopeDBInit :call <SID>init()<CR>
+noremap <unique> <Plug>CscopeDBInit :call <SID>initForce()<CR>
 
 " Autoinit: {{{1
 "
