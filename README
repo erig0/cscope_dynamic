@@ -75,6 +75,10 @@ g:cscopedb_extra_files       A file with a list of files for cscope_dynamic to
                              May also be useful if you want to pass absolute
                              path names to cscope.
 
+g:cscopedb_src_dirs_file     This is a file with a list of directorys, the auto init search
+                             source code files in the list of directorys, if we don't set 
+                             this file, it will use current directory.
+
 g:cscopedb_auto_files        If true, automatically find source code relative
                              to the current working directory.
 
