@@ -55,6 +55,11 @@ if exists("g:cscopedb_extra_files")
 else
     let s:extra_files = ".cscope.extra.files"
 endif
+if exists("g:cscopedb_src_dirs_file")
+    let s:src_dirs_file = g:cscopedb_src_dirs_file
+else
+    let s:src_dirs_file = ".cscope.dirs.file"
+endif
 if exists("g:cscopedb_auto_files")
     let s:auto_files = g:cscopedb_auto_files
 else
@@ -163,11 +168,20 @@ function! s:dbUpdate()
     else
         " Build auto file list
         "
+        if filereadable(expand(s:src_dirs_file))
+            let src_dirs = ""
+            for path in readfile(expand(s:src_dirs_file))
+                let src_dirs .= " ".path
+            endfor
+        else 
+            let src_dirs = " . "
+        endif
+
         let cmd .= "("
         let cmd .= "set -f;" " turn off sh globbing
         if s:auto_files
             " Do the find command a 'portable' way
-            let cmd .= "find . -name *.c   -or -name *.h -or"
+            let cmd .= "find ".src_dirs." -name *.c   -or -name *.h -or"
             let cmd .=       " -name *.C   -or -name *.H -or"
             let cmd .=       " -name *.c++ -or -name *.h++ -or"
             let cmd .=       " -name *.cxx -or -name *.hxx -or"
