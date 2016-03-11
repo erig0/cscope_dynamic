@@ -145,7 +145,8 @@ machines that have a proper shell. It likely also functions under cygwin.
 
 5. Development
 ===============================================================================
-See bitbucket[1] for more information and current development.
+Development is mirrored to both github[4] and bitbucket[1]. Pull requests are
+accepted at either.
 
 
 6. References
@@ -153,5 +154,6 @@ See bitbucket[1] for more information and current development.
 [1] https://bitbucket.org/ericgarver/cscope_dynamic
 [2] http://www.vim.org/scripts/script.php?script_id=5098
 [3] http://vim.wikia.com/wiki/Timer_to_execute_commands_periodically
+[4] https://github.com/erig0/cscope_dynamic
 
 ```
