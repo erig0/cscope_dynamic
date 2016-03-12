@@ -33,11 +33,11 @@ you're often only modifying a subset of files at a time.
 
 1. Installation
 ===============================================================================
-The plugin is only one file. So you can check out the repository[1] and drop
+The plugin is only one file. So you can check out the repository[1][4] and drop
 cscope_dynamic.vim into your ~/.vim/plugin/ directory.
 
-Alternatively you can grab a vimball release from the downloads section[1][2].
-Then install it the standard vimball way.
+Alternatively you can grab a vimball release from the downloads
+section[1][2][4].  Then install it the standard vimball way.
 
     $ vim .../cscope_dynamic-<ver>.vmb.gz
     :so %
