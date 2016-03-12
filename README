@@ -3,7 +3,7 @@
 
 cscope_dynamic.vim
 
-A VIM plugin that enables very fast automatic cscope database updates for C/C++
+A Vim plugin that enables very fast automatic cscope database updates for C/C++
 codebases. It accomplishes this by using two cscope databases; a large one, and
 a small one. When a file is written it is moved to the small database, which
 can update in a matter of seconds - often sub-second. The file is then removed
@@ -47,7 +47,7 @@ section[1][2][4].  Then install it the standard vimball way.
 =======================================
 To init the plugin you can bind a key to the init function. If the cscope
 database already exists (because you've already done init) and you re-launch
-VIM then the plugin will auto initialize.
+Vim then the plugin will auto initialize.
 
     nmap <F12> <Plug>CscopeDBInit
 
