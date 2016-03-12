@@ -17,6 +17,7 @@ you're often only modifying a subset of files at a time.
 
 1. Installation
 1.1 vimrc changes
+1.2 cscope key maps
 2. Configurables
 2.1 Variables
 2.2 Hooks
@@ -44,12 +45,17 @@ Then install it the standard vimball way.
 
 1.1 vimrc changes
 =======================================
-
 To init the plugin you can bind a key to the init function. If the cscope
 database already exists (because you've already done init) and you re-launch
 VIM then the plugin will auto initialize.
 
     nmap <F12> <Plug>CscopeDBInit
+
+1.2 cscope key maps
+=======================================
+The plugin does not provide key maps for searching the database. You should
+also install cscope_maps.vim[5] from the cscope project to get the "default"
+cscope key maps.
 
 
 2. Configurables
@@ -155,5 +161,6 @@ accepted at either.
 [2] http://www.vim.org/scripts/script.php?script_id=5098
 [3] http://vim.wikia.com/wiki/Timer_to_execute_commands_periodically
 [4] https://github.com/erig0/cscope_dynamic
+[5] http://cscope.sourceforge.net/cscope_maps.vim
 
 ```
