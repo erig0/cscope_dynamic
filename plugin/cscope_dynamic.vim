@@ -185,6 +185,7 @@ function! s:dbUpdate()
             let cmd .=       " -name *.C   -or -name *.H -or"
             let cmd .=       " -name *.c++ -or -name *.h++ -or"
             let cmd .=       " -name *.cxx -or -name *.hxx -or"
+            let cmd .=       " -name *.cc  -or -name *.hh -or"
             let cmd .=       " -name *.cpp -or -name *.hpp"
             let cmd .=       " -type f"
         else
