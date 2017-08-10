@@ -208,6 +208,10 @@ function! s:dbUpdate()
             let cmd .= " | grep -v -f".s:small_file.".files "
         endif
 
+        " Trick to resolve links with relative paths
+        "
+        let cmd .= "| xargs realpath --relative-to=$(pwd) "
+
         let cmd .= "> ".s:big_file.".files"
 
         " Build the tags
