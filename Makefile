@@ -1,5 +1,5 @@
 NAME=cscope_dynamic
-VERSION=0.6
+VERSION=0.7
 
 SRC=	plugin/cscope_dynamic.vim
 
