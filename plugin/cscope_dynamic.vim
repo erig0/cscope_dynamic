@@ -210,7 +210,9 @@ function! s:dbUpdate()
 
         " Trick to resolve links with relative paths
         "
-        let cmd .= "| xargs realpath --relative-to=$(pwd) "
+        if s:resolve_links
+            let cmd .= "| xargs realpath --relative-to=$(pwd) "
+        endif
 
         let cmd .= "> ".s:big_file.".files"
 
