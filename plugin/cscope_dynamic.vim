@@ -181,13 +181,14 @@ function! s:dbUpdate()
         let cmd .= "set -f;" " turn off sh globbing
         if s:auto_files
             " Do the find command a 'portable' way
-            let cmd .= "find ".src_dirs." -name *.c   -or -name *.h -or"
+            let cmd .= "find ".src_dirs." -type f -and \\("
+            let cmd .=       " -name *.c   -or -name *.h -or"
             let cmd .=       " -name *.C   -or -name *.H -or"
             let cmd .=       " -name *.c++ -or -name *.h++ -or"
             let cmd .=       " -name *.cxx -or -name *.hxx -or"
             let cmd .=       " -name *.cc  -or -name *.hh -or"
             let cmd .=       " -name *.cpp -or -name *.hpp"
-            let cmd .=       " -type f"
+            let cmd .=       " \\) 2>/dev/null"
         else
             let cmd .= "echo "  " dummy so following cat command does not hang.
         endif
