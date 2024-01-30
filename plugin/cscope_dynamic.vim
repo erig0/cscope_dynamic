@@ -206,7 +206,7 @@ function! s:dbUpdate()
         " prune entries that are in the small DB
         "
         if !empty(s:small_file_dict)
-            let cmd .= " | grep -v -f".s:small_file.".files "
+            let cmd .= " | grep -w -v -f".s:small_file.".files "
         endif
 
         " Trick to resolve links with relative paths
