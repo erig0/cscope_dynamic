@@ -95,10 +95,12 @@ let s:full_update_force = 0
 " Section: Script functions {{{1
 
 function! s:runShellCommand(cmd)
-    " Use perl if we have it. Using :!<shell command>
-    " breaks the tag stack for some reason.
-    "
-    if has('perl')
+    if has('job')
+        call job_start(['sh', '-c', a:cmd])
+    elseif has('perl')
+        " Use perl if we have it. Using :!<shell command>
+        " breaks the tag stack for some reason.
+        "
         silent execute "perl system('" . a:cmd . "')" | redraw!
     else 
         silent execute "!" . a:cmd | redraw!
